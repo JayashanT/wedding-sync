@@ -1,0 +1,120 @@
+{
+  "weddingId": "wedding-001",
+  "roles": [
+    "Photographer",
+    "Florist",
+    "Catering Lead",
+    "Transport Coordinator",
+    "JaySH"
+  ],
+  "schedule": [
+    {
+      "id": "item-pre-001",
+      "date": "2026-08-10",
+      "time": "10:00",
+      "title": "Venue Walk-through",
+      "description": "Couple and coordinator visit the venue to finalise layout and confirm all bookings.",
+      "location": "Grand Ballroom, Cinnamon Grand",
+      "responsiblePersons": ["JaySH"]
+    },
+    {
+      "id": "item-pre-002",
+      "date": "2026-08-13",
+      "time": "14:00",
+      "title": "Floral Arrangement Review",
+      "description": "Florist presents final floral samples for approval before the wedding day.",
+      "location": "Florist Studio",
+      "responsiblePersons": ["Florist", "JaySH"]
+    },
+    {
+      "id": "item-pre-003",
+      "date": "2026-08-14",
+      "time": "09:00",
+      "title": "Rehearsal",
+      "description": "Full wedding rehearsal at the venue. All key persons to attend.",
+      "location": "Grand Ballroom, Cinnamon Grand",
+      "responsiblePersons": ["JaySH", "Photographer"]
+    },
+    {
+      "id": "item-001",
+      "date": "2026-08-15",
+      "time": "08:00",
+      "title": "Venue Setup Begins",
+      "description": "Florist and catering team arrive to begin decorating the hall and setting up tables with floral arrangements.",
+      "location": "Grand Ballroom, Cinnamon Grand",
+      "responsiblePersons": ["Florist", "Catering Lead", "JaySH"]
+    },
+    {
+      "id": "item-002",
+      "date": "2026-08-15",
+      "time": "10:00",
+      "title": "Bridal Party Hair & Makeup",
+      "description": "Bridal party assembles at the bridal suite for professional hair and makeup styling.",
+      "location": "Bridal Suite, Level 3",
+      "responsiblePersons": []
+    },
+    {
+      "id": "item-003",
+      "date": "2026-08-15",
+      "time": "13:00",
+      "title": "Photographer Pre-Shoot",
+      "description": "Individual and couple portraits taken before the ceremony begins in the hotel gardens.",
+      "location": "Hotel Gardens",
+      "responsiblePersons": ["Photographer"]
+    },
+    {
+      "id": "item-004",
+      "date": "2026-08-15",
+      "time": "15:00",
+      "title": "Guest Arrival",
+      "description": "Ushers guide guests to their seats. MC welcomes guests at the main entrance.",
+      "location": "Main Entrance & Grand Ballroom",
+      "responsiblePersons": ["Transport Coordinator"]
+    },
+    {
+      "id": "item-005",
+      "date": "2026-08-15",
+      "time": "16:00",
+      "title": "Wedding Ceremony",
+      "description": "Main ceremony begins. Photographer captures all key moments of the ceremony.",
+      "location": "Grand Ballroom",
+      "responsiblePersons": ["Photographer"]
+    },
+    {
+      "id": "item-006",
+      "date": "2026-08-15",
+      "time": "18:30",
+      "title": "Reception Dinner Begins",
+      "description": "Catering lead ensures all courses are served on schedule.",
+      "location": "Grand Ballroom",
+      "responsiblePersons": ["Catering Lead"]
+    },
+    {
+      "id": "item-007",
+      "date": "2026-08-15",
+      "time": "20:00",
+      "title": "Cake Cutting & First Dance",
+      "description": "Couple cuts wedding cake followed by their first dance. Photographer captures the moment.",
+      "location": "Grand Ballroom Stage",
+      "responsiblePersons": ["Photographer", "Catering Lead"]
+    },
+    {
+      "id": "item-008",
+      "date": "2026-08-15",
+      "time": "22:00",
+      "title": "Guest Departure & Transport",
+      "description": "Transport coordinator ensures all guests have arranged transport home safely.",
+      "location": "Main Entrance",
+      "responsiblePersons": ["Transport Coordinator"]
+    },
+    {
+      "id": "item-post-001",
+      "date": "2026-08-16",
+      "time": "10:00",
+      "title": "Venue Clearance",
+      "description": "Florist and catering teams collect their equipment and clear the venue.",
+      "location": "Grand Ballroom, Cinnamon Grand",
+      "responsiblePersons": ["Florist", "Catering Lead"]
+    }
+  ]
+}

@@ -1,0 +1,75 @@
+{
+  "weddingId": "wedding-002",
+  "roles": [
+    "Master of Ceremonies",
+    "Photographer",
+    "Videographer",
+    "Catering Lead",
+    "Coordinator"
+  ],
+  "schedule": [
+    {
+      "id": "item-pre-001",
+      "date": "2026-09-18",
+      "time": "11:00",
+      "title": "Venue Inspection",
+      "description": "Final walk-through of the venue to confirm all arrangements.",
+      "location": "Galadari Hotel, Main Hall",
+      "responsiblePersons": ["Coordinator"]
+    },
+    {
+      "id": "item-pre-002",
+      "date": "2026-09-19",
+      "time": "14:00",
+      "title": "Rehearsal Ceremony",
+      "description": "Full rehearsal of the ceremony with key wedding party members.",
+      "location": "Galadari Hotel, Main Hall",
+      "responsiblePersons": ["Master of Ceremonies", "Coordinator"]
+    },
+    {
+      "id": "item-001",
+      "date": "2026-09-20",
+      "time": "09:00",
+      "title": "Venue Decoration Setup",
+      "description": "Decoration team sets up the venue with floral arrangements and table settings.",
+      "location": "Galadari Hotel, Main Hall",
+      "responsiblePersons": ["Coordinator", "Catering Lead"]
+    },
+    {
+      "id": "item-002",
+      "date": "2026-09-20",
+      "time": "14:00",
+      "title": "Guest Arrival",
+      "description": "Guests begin arriving. MC greets guests and guides them to seats.",
+      "location": "Main Entrance",
+      "responsiblePersons": ["Master of Ceremonies", "Coordinator"]
+    },
+    {
+      "id": "item-003",
+      "date": "2026-09-20",
+      "time": "15:30",
+      "title": "Wedding Ceremony",
+      "description": "The main wedding ceremony takes place.",
+      "location": "Main Hall",
+      "responsiblePersons": ["Master of Ceremonies", "Photographer", "Videographer"]
+    },
+    {
+      "id": "item-004",
+      "date": "2026-09-20",
+      "time": "18:00",
+      "title": "Reception Dinner",
+      "description": "Dinner reception begins with the catering team serving all courses.",
+      "location": "Main Hall",
+      "responsiblePersons": ["Catering Lead", "Master of Ceremonies"]
+    },
+    {
+      "id": "item-post-001",
+      "date": "2026-09-21",
+      "time": "10:00",
+      "title": "Photo Album Review",
+      "description": "Photographer presents initial photos from the wedding for couple review.",
+      "location": "Photographer Studio",
+      "responsiblePersons": ["Photographer"]
+    }
+  ]
+}

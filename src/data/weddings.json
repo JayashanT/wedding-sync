@@ -1,0 +1,22 @@
+{
+  "weddings": [
+    {
+      "id": "wedding-001",
+      "brideName": "Ayesha",
+      "groomName": "Kasun",
+      "weddingDate": "2026-08-15",
+      "accessCode": "AK2026",
+      "coupleUsername": "ayesha.kasun",
+      "couplePassword": "couple@2026"
+    },
+    {
+      "id": "wedding-002",
+      "brideName": "Nimasha",
+      "groomName": "Dilshan",
+      "weddingDate": "2026-09-20",
+      "accessCode": "ND9920",
+      "coupleUsername": "nimasha.dilshan",
+      "couplePassword": "couple@9920"
+    }
+  ]
+}
