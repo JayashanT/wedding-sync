@@ -42,7 +42,9 @@
     "@unrs/resolver-binding-linux-x64-gnu": "1.12.2",
     "@unrs/resolver-binding-linux-x64-musl": "1.12.2",
     "@unrs/resolver-binding-linux-arm64-gnu": "1.12.2",
-    "@unrs/resolver-binding-linux-arm64-musl": "1.12.2"
+    "@unrs/resolver-binding-linux-arm64-musl": "1.12.2",
+    "@cloudflare/workerd-linux-64": "1.20260426.1",
+    "@cloudflare/workerd-linux-arm64": "1.20260426.1"
   },
   "devDependencies": {
     "@opennextjs/cloudflare": "^1.20.1",
