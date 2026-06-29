@@ -32,7 +32,17 @@
     "@next/swc-linux-arm64-musl": "16.2.9",
     "lightningcss-linux-x64-gnu": "1.32.0",
     "lightningcss-linux-x64-musl": "1.32.0",
-    "lightningcss-linux-arm64-gnu": "1.32.0"
+    "lightningcss-linux-arm64-gnu": "1.32.0",
+    "@tailwindcss/oxide-linux-x64-gnu": "4.3.1",
+    "@tailwindcss/oxide-linux-x64-musl": "4.3.1",
+    "@tailwindcss/oxide-linux-arm64-gnu": "4.3.1",
+    "@tailwindcss/oxide-linux-arm64-musl": "4.3.1",
+    "@esbuild/linux-x64": "0.25.4",
+    "@esbuild/linux-arm64": "0.25.4",
+    "@unrs/resolver-binding-linux-x64-gnu": "1.12.2",
+    "@unrs/resolver-binding-linux-x64-musl": "1.12.2",
+    "@unrs/resolver-binding-linux-arm64-gnu": "1.12.2",
+    "@unrs/resolver-binding-linux-arm64-musl": "1.12.2"
   },
   "devDependencies": {
     "@opennextjs/cloudflare": "^1.20.1",
