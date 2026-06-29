@@ -10,7 +10,7 @@ interface WeddingMeta {
   weddingDate: string;
   accessCode: string;
   coupleUsername: string;
-  couplePassword: string;
+  couplePassword?: string; // not returned from API when editing
 }
 
 interface WeddingFormProps {
@@ -19,22 +19,25 @@ interface WeddingFormProps {
   onCancel: () => void;
 }
 
-const EMPTY = { brideName: '', groomName: '', weddingDate: '', accessCode: '', coupleUsername: '', couplePassword: '' };
+type Fields = { brideName: string; groomName: string; weddingDate: string; accessCode: string; coupleUsername: string; couplePassword: string };
+const EMPTY: Fields = { brideName: '', groomName: '', weddingDate: '', accessCode: '', coupleUsername: '', couplePassword: '' };
 
 export default function WeddingForm({ initialData, onSubmit, onCancel }: WeddingFormProps) {
-  const [fields, setFields] = useState(initialData ? { ...initialData } : EMPTY);
-  const [errors, setErrors] = useState<Partial<typeof EMPTY>>({});
+  const [fields, setFields] = useState<Fields>(initialData ? { ...initialData, couplePassword: '' } : { ...EMPTY });
+  const [errors, setErrors] = useState<Partial<Fields>>({});
   const [saving, setSaving] = useState(false);
 
   useEffect(() => {
-    setFields(initialData ? { ...initialData } : EMPTY);
+    setFields(initialData ? { ...initialData, couplePassword: '' } : { ...EMPTY });
     setErrors({});
   }, [initialData]);
 
-  function set(key: keyof typeof EMPTY, value: string) {
+  function set(key: keyof Fields, value: string) {
     setFields(prev => ({ ...prev, [key]: value }));
     setErrors(prev => ({ ...prev, [key]: '' }));
   }
+
+  const isEditing = !!initialData;
 
   function validate() {
     const e: Partial<typeof EMPTY> = {};
@@ -43,7 +46,7 @@ export default function WeddingForm({ initialData, onSubmit, onCancel }: Wedding
     if (!fields.weddingDate) e.weddingDate = 'Required';
     if (!fields.accessCode.trim()) e.accessCode = 'Required';
     if (!fields.coupleUsername.trim()) e.coupleUsername = 'Required';
-    if (!fields.couplePassword.trim()) e.couplePassword = 'Required';
+    if (!isEditing && !fields.couplePassword.trim()) e.couplePassword = 'Required';
     return e;
   }
 
@@ -63,7 +66,7 @@ export default function WeddingForm({ initialData, onSubmit, onCancel }: Wedding
     setSaving(false);
   }
 
-  function Field({ label, fieldKey, type = 'text', placeholder }: { label: string; fieldKey: keyof typeof EMPTY; type?: string; placeholder?: string }) {
+  function Field({ label, fieldKey, type = 'text', placeholder }: { label: string; fieldKey: keyof Fields; type?: string; placeholder?: string }) {
     return (
       <div>
         <label className="form-label">{label}</label>
@@ -116,7 +119,24 @@ export default function WeddingForm({ initialData, onSubmit, onCancel }: Wedding
         </p>
         <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
           <Field label="Username" fieldKey="coupleUsername" placeholder="e.g. ayesha.kasun" />
-          <Field label="Password" fieldKey="couplePassword" type="password" placeholder="Strong password" />
+          <div>
+            <label className="form-label">
+              Password{isEditing && <span className="ml-1 font-normal opacity-60">(leave blank to keep)</span>}
+            </label>
+            <input
+              type="password"
+              value={fields.couplePassword}
+              onChange={e => set('couplePassword', e.target.value)}
+              placeholder={isEditing ? 'Enter new password to change' : 'Strong password'}
+              className="form-input"
+            />
+            {isEditing && (
+              <p className="mt-1 text-xs" style={{ color: 'rgba(27,42,74,0.45)' }}>
+                🔒 Stored as bcrypt hash — current password cannot be read
+              </p>
+            )}
+            {errors.couplePassword && <p className="mt-1 text-xs text-red-500">{errors.couplePassword}</p>}
+          </div>
         </div>
       </div>
 

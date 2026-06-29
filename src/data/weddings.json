@@ -7,7 +7,7 @@
       "weddingDate": "2026-08-15",
       "accessCode": "AK2026",
       "coupleUsername": "ayesha.kasun",
-      "couplePassword": "couple@2026"
+      "couplePassword": "$2b$12$fhoF4mYc2N1Sfmiyu2p7rONZrtm5p3zb/2Cs97zoPfDXp02QACCma"
     },
     {
       "id": "wedding-002",
@@ -16,7 +16,7 @@
       "weddingDate": "2026-09-20",
       "accessCode": "ND9920",
       "coupleUsername": "nimasha.dilshan",
-      "couplePassword": "couple@9920"
+      "couplePassword": "$2b$12$ku25C2IT3lxRehQaSjd3RuoN63HmWYLB7iyHH8J/d3p2YsXgjj3SK"
     }
   ]
 }

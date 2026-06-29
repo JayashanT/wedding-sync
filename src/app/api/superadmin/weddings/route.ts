@@ -1,8 +1,10 @@
 import { NextResponse } from 'next/server';
 import path from 'path';
 import fs from 'fs/promises';
+import bcrypt from 'bcryptjs';
 
 const WEDDINGS_PATH = path.join(process.cwd(), 'src', 'data', 'weddings.json');
+const SALT_ROUNDS = 12;
 
 function weddingFilePath(id: string) {
   return path.join(process.cwd(), 'src', 'data', 'weddings', `${id}.json`);
@@ -11,7 +13,10 @@ function weddingFilePath(id: string) {
 export async function GET() {
   try {
     const raw = await fs.readFile(WEDDINGS_PATH, 'utf-8');
-    return NextResponse.json(JSON.parse(raw));
+    const data = JSON.parse(raw);
+    // Strip hashed passwords from the response — never send hashes to the client
+    const safe = data.weddings.map(({ couplePassword: _, ...rest }: { couplePassword: string; [key: string]: unknown }) => rest);
+    return NextResponse.json({ weddings: safe });
   } catch {
     return NextResponse.json({ error: 'Failed to read weddings.' }, { status: 500 });
   }
@@ -30,22 +35,23 @@ export async function POST(req: Request) {
 
     const slug = `${brideName.toLowerCase().replace(/\s+/g, '')}-${groomName.toLowerCase().replace(/\s+/g, '')}`;
     let id = `wedding-${slug}`;
-    // ensure unique
     let counter = 2;
     while (data.weddings.find((w: { id: string }) => w.id === id)) {
       id = `wedding-${slug}-${counter++}`;
     }
 
-    const newWedding = { id, brideName, groomName, weddingDate, accessCode, coupleUsername, couplePassword };
+    const hashedPassword = await bcrypt.hash(couplePassword, SALT_ROUNDS);
+    const newWedding = { id, brideName, groomName, weddingDate, accessCode, coupleUsername, couplePassword: hashedPassword };
     data.weddings.push(newWedding);
 
     await fs.writeFile(WEDDINGS_PATH, JSON.stringify(data, null, 2), 'utf-8');
 
-    // create empty per-wedding file
     const perWedding = { weddingId: id, roles: [], schedule: [] };
     await fs.writeFile(weddingFilePath(id), JSON.stringify(perWedding, null, 2), 'utf-8');
 
-    return NextResponse.json(newWedding, { status: 201 });
+    // Return without the hash
+    const { couplePassword: _pw, ...safeWedding } = newWedding;
+    return NextResponse.json(safeWedding, { status: 201 });
   } catch {
     return NextResponse.json({ error: 'Failed to create wedding.' }, { status: 500 });
   }

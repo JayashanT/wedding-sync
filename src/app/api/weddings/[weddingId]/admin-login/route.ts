@@ -1,6 +1,7 @@
 import { NextResponse } from 'next/server';
 import path from 'path';
 import fs from 'fs/promises';
+import bcrypt from 'bcryptjs';
 import type { WeddingsFile } from '@/types';
 
 export async function POST(req: Request, { params }: { params: Promise<{ weddingId: string }> }) {
@@ -16,11 +17,17 @@ export async function POST(req: Request, { params }: { params: Promise<{ wedding
     const raw = await fs.readFile(filePath, 'utf-8');
     const data: WeddingsFile = JSON.parse(raw);
 
-    const wedding = data.weddings.find(
-      w => w.id === weddingId && w.coupleUsername === username && w.couplePassword === password
-    );
-
+    const wedding = data.weddings.find(w => w.id === weddingId && w.coupleUsername === username);
     if (!wedding) {
+      return NextResponse.json({ error: 'Invalid credentials' }, { status: 401 });
+    }
+
+    // Support both plaintext (legacy) and bcrypt-hashed passwords
+    const passwordMatch = wedding.couplePassword.startsWith('$2')
+      ? await bcrypt.compare(password, wedding.couplePassword)
+      : password === wedding.couplePassword;
+
+    if (!passwordMatch) {
       return NextResponse.json({ error: 'Invalid credentials' }, { status: 401 });
     }
 

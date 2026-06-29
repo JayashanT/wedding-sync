@@ -1,6 +1,7 @@
 import { NextResponse } from 'next/server';
 import path from 'path';
 import fs from 'fs/promises';
+import bcrypt from 'bcryptjs';
 import type { WeddingsFile } from '@/types';
 
 export async function POST(request: Request) {
@@ -15,8 +16,17 @@ export async function POST(request: Request) {
     const raw = await fs.readFile(filePath, 'utf-8');
     const data: WeddingsFile = JSON.parse(raw);
 
-    const wedding = data.weddings.find(w => w.id === weddingId && w.accessCode === accessCode);
+    const wedding = data.weddings.find(w => w.id === weddingId);
     if (!wedding) {
+      return NextResponse.json({ error: 'Invalid wedding ID or access code' }, { status: 401 });
+    }
+
+    // Support both plaintext (legacy) and bcrypt-hashed access codes
+    const codeMatch = wedding.accessCode.startsWith('$2')
+      ? await bcrypt.compare(accessCode, wedding.accessCode)
+      : accessCode === wedding.accessCode;
+
+    if (!codeMatch) {
       return NextResponse.json({ error: 'Invalid wedding ID or access code' }, { status: 401 });
     }
 

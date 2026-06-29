@@ -15,7 +15,7 @@ interface WeddingMeta {
   weddingDate: string;
   accessCode: string;
   coupleUsername: string;
-  couplePassword: string;
+  // couplePassword is never returned from the API (stored as bcrypt hash)
 }
 
 export default function SuperAdminPage() {
@@ -26,7 +26,6 @@ export default function SuperAdminPage() {
   const [editingWedding, setEditingWedding] = useState<WeddingMeta | undefined>();
   const [deleteConfirm, setDeleteConfirm] = useState<WeddingMeta | null>(null);
   const [deleting, setDeleting] = useState(false);
-  const [showPasswords, setShowPasswords] = useState<Record<string, boolean>>({});
 
   useEffect(() => {
     const session = localStorage.getItem('weddingday_superadmin');
@@ -81,9 +80,6 @@ export default function SuperAdminPage() {
   function openEdit(w: WeddingMeta) { setEditingWedding(w); setFormOpen(true); }
   function openAdd() { setEditingWedding(undefined); setFormOpen(true); }
 
-  function togglePassword(id: string) {
-    setShowPasswords(prev => ({ ...prev, [id]: !prev[id] }));
-  }
 
   if (loading) {
     return (
@@ -213,17 +209,14 @@ export default function SuperAdminPage() {
                         style={{ backgroundColor: 'rgba(212,175,55,0.07)', border: '1px solid rgba(212,175,55,0.2)' }}
                       >
                         <p className="text-xs font-semibold uppercase tracking-wider mb-0.5" style={{ color: 'rgba(27,42,74,0.45)' }}>Admin Password</p>
-                        <div className="flex items-center gap-1">
-                          <p className="font-mono text-sm" style={{ color: 'var(--color-navy)' }}>
-                            {showPasswords[w.id] ? w.couplePassword : '••••••••'}
-                          </p>
-                          <button
-                            onClick={() => togglePassword(w.id)}
-                            className="text-xs opacity-50 hover:opacity-100 transition-opacity ml-1"
-                            style={{ color: 'var(--color-navy)' }}
+                        <div className="flex items-center gap-2">
+                          <p className="font-mono text-sm tracking-widest" style={{ color: 'rgba(27,42,74,0.4)' }}>••••••••</p>
+                          <span
+                            className="text-xs px-1.5 py-0.5 rounded font-medium"
+                            style={{ backgroundColor: 'rgba(34,197,94,0.12)', color: '#16a34a' }}
                           >
-                            {showPasswords[w.id] ? 'Hide' : 'Show'}
-                          </button>
+                            encrypted
+                          </span>
                         </div>
                       </div>
                     </div>
