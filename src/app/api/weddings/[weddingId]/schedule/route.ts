@@ -1,18 +1,13 @@
 import { NextResponse } from 'next/server';
-import path from 'path';
-import fs from 'fs/promises';
+import { r2GetJson, r2PutJson, R2_KEYS } from '@/lib/r2';
 import type { WeddingData, ScheduleItem } from '@/types';
 import { sortScheduleByTime } from '@/lib/schedule';
-
-function getWeddingPath(weddingId: string) {
-  return path.join(process.cwd(), 'src', 'data', 'weddings', `${weddingId}.json`);
-}
 
 export async function GET(_req: Request, { params }: { params: Promise<{ weddingId: string }> }) {
   try {
     const { weddingId } = await params;
-    const raw = await fs.readFile(getWeddingPath(weddingId), 'utf-8');
-    const data: WeddingData = JSON.parse(raw);
+    const data = await r2GetJson<WeddingData>(R2_KEYS.wedding(weddingId));
+    if (!data) return NextResponse.json({ error: 'Wedding not found' }, { status: 404 });
     return NextResponse.json(sortScheduleByTime(data.schedule));
   } catch {
     return NextResponse.json({ error: 'Wedding not found' }, { status: 404 });
@@ -32,9 +27,8 @@ export async function POST(req: Request, { params }: { params: Promise<{ wedding
       return NextResponse.json({ error: 'Max 5 responsible persons' }, { status: 400 });
     }
 
-    const filePath = getWeddingPath(weddingId);
-    const raw = await fs.readFile(filePath, 'utf-8');
-    const data: WeddingData = JSON.parse(raw);
+    const data = await r2GetJson<WeddingData>(R2_KEYS.wedding(weddingId));
+    if (!data) return NextResponse.json({ error: 'Wedding not found' }, { status: 404 });
 
     const newItem: ScheduleItem = {
       id: `item-${Date.now()}-${Math.random().toString(36).slice(2, 7)}`,
@@ -47,7 +41,7 @@ export async function POST(req: Request, { params }: { params: Promise<{ wedding
     };
 
     data.schedule = sortScheduleByTime([...data.schedule, newItem]);
-    await fs.writeFile(filePath, JSON.stringify(data, null, 2), 'utf-8');
+    await r2PutJson(R2_KEYS.wedding(weddingId), data);
 
     return NextResponse.json({ data: newItem }, { status: 201 });
   } catch {

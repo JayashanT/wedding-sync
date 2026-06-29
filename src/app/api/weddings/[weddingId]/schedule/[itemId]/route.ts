@@ -1,12 +1,7 @@
 import { NextResponse } from 'next/server';
-import path from 'path';
-import fs from 'fs/promises';
+import { r2GetJson, r2PutJson, R2_KEYS } from '@/lib/r2';
 import type { WeddingData } from '@/types';
 import { sortScheduleByTime } from '@/lib/schedule';
-
-function getWeddingPath(weddingId: string) {
-  return path.join(process.cwd(), 'src', 'data', 'weddings', `${weddingId}.json`);
-}
 
 type Params = { params: Promise<{ weddingId: string; itemId: string }> };
 
@@ -15,9 +10,8 @@ export async function PUT(req: Request, { params }: Params) {
     const { weddingId, itemId } = await params;
     const body = await req.json();
 
-    const filePath = getWeddingPath(weddingId);
-    const raw = await fs.readFile(filePath, 'utf-8');
-    const data: WeddingData = JSON.parse(raw);
+    const data = await r2GetJson<WeddingData>(R2_KEYS.wedding(weddingId));
+    if (!data) return NextResponse.json({ error: 'Wedding not found' }, { status: 404 });
 
     const idx = data.schedule.findIndex(item => item.id === itemId);
     if (idx === -1) return NextResponse.json({ error: 'Item not found' }, { status: 404 });
@@ -29,7 +23,7 @@ export async function PUT(req: Request, { params }: Params) {
     data.schedule[idx] = { ...data.schedule[idx], ...body, id: itemId };
     data.schedule = sortScheduleByTime(data.schedule);
 
-    await fs.writeFile(filePath, JSON.stringify(data, null, 2), 'utf-8');
+    await r2PutJson(R2_KEYS.wedding(weddingId), data);
     return NextResponse.json({ data: data.schedule.find(i => i.id === itemId) });
   } catch {
     return NextResponse.json({ error: 'Failed to update item' }, { status: 500 });
@@ -40,9 +34,8 @@ export async function DELETE(_req: Request, { params }: Params) {
   try {
     const { weddingId, itemId } = await params;
 
-    const filePath = getWeddingPath(weddingId);
-    const raw = await fs.readFile(filePath, 'utf-8');
-    const data: WeddingData = JSON.parse(raw);
+    const data = await r2GetJson<WeddingData>(R2_KEYS.wedding(weddingId));
+    if (!data) return NextResponse.json({ error: 'Wedding not found' }, { status: 404 });
 
     const originalLen = data.schedule.length;
     data.schedule = data.schedule.filter(item => item.id !== itemId);
@@ -51,7 +44,7 @@ export async function DELETE(_req: Request, { params }: Params) {
       return NextResponse.json({ error: 'Item not found' }, { status: 404 });
     }
 
-    await fs.writeFile(filePath, JSON.stringify(data, null, 2), 'utf-8');
+    await r2PutJson(R2_KEYS.wedding(weddingId), data);
     return NextResponse.json({ success: true });
   } catch {
     return NextResponse.json({ error: 'Failed to delete item' }, { status: 500 });

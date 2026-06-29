@@ -1,34 +1,20 @@
 import { NextResponse } from 'next/server';
-import path from 'path';
-import fs from 'fs/promises';
+import { r2GetJson, r2PutJson, R2_KEYS } from '@/lib/r2';
 import type { WeddingData, WeddingsFile } from '@/types';
 
-function getWeddingPath(weddingId: string) {
-  return path.join(process.cwd(), 'src', 'data', 'weddings', `${weddingId}.json`);
-}
-
-function getWeddingsPath() {
-  return path.join(process.cwd(), 'src', 'data', 'weddings.json');
-}
-
 async function getWeddingDate(weddingId: string): Promise<string | null> {
-  try {
-    const raw = await fs.readFile(getWeddingsPath(), 'utf-8');
-    const data: WeddingsFile = JSON.parse(raw);
-    return data.weddings.find(w => w.id === weddingId)?.weddingDate ?? null;
-  } catch {
-    return null;
-  }
+  const data = await r2GetJson<WeddingsFile>(R2_KEYS.weddings());
+  return data?.weddings.find(w => w.id === weddingId)?.weddingDate ?? null;
 }
 
 export async function GET(_req: Request, { params }: { params: Promise<{ weddingId: string }> }) {
   try {
     const { weddingId } = await params;
-    const [raw, weddingDate] = await Promise.all([
-      fs.readFile(getWeddingPath(weddingId), 'utf-8'),
+    const [data, weddingDate] = await Promise.all([
+      r2GetJson<WeddingData>(R2_KEYS.wedding(weddingId)),
       getWeddingDate(weddingId),
     ]);
-    const data: WeddingData = JSON.parse(raw);
+    if (!data) return NextResponse.json({ error: 'Wedding not found' }, { status: 404 });
     return NextResponse.json({ ...data, weddingDate: weddingDate ?? data.weddingDate ?? null });
   } catch {
     return NextResponse.json({ error: 'Wedding not found' }, { status: 404 });
@@ -39,9 +25,9 @@ export async function PUT(req: Request, { params }: { params: Promise<{ weddingI
   try {
     const { weddingId } = await params;
     const body = await req.json();
-    const filePath = getWeddingPath(weddingId);
-    const raw = await fs.readFile(filePath, 'utf-8');
-    const data: WeddingData = JSON.parse(raw);
+
+    const data = await r2GetJson<WeddingData>(R2_KEYS.wedding(weddingId));
+    if (!data) return NextResponse.json({ error: 'Wedding not found' }, { status: 404 });
 
     if (body.roles !== undefined) {
       if (!Array.isArray(body.roles) || body.roles.length > 5) {
@@ -50,7 +36,7 @@ export async function PUT(req: Request, { params }: { params: Promise<{ weddingI
       data.roles = body.roles;
     }
 
-    await fs.writeFile(filePath, JSON.stringify(data, null, 2), 'utf-8');
+    await r2PutJson(R2_KEYS.wedding(weddingId), data);
     const weddingDate = await getWeddingDate(weddingId);
     return NextResponse.json({ ...data, weddingDate });
   } catch {
