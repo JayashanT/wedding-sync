@@ -7,9 +7,9 @@
     "build": "next build",
     "start": "next start",
     "lint": "eslint",
-    "build:cf": "opennextjs-cloudflare build",
-    "deploy:cf": "opennextjs-cloudflare build && opennextjs-cloudflare deploy",
-    "preview:cf": "opennextjs-cloudflare build && wrangler dev"
+    "build:cf": "opennextjs-cloudflare build && node scripts/cf-postbuild.mjs",
+    "deploy:cf": "npm run build:cf && opennextjs-cloudflare deploy",
+    "preview:cf": "npm run build:cf && wrangler dev"
   },
   "dependencies": {
     "@aws-sdk/client-s3": "^3.1075.0",
