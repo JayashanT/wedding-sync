@@ -5,21 +5,30 @@ import {
   DeleteObjectCommand,
 } from '@aws-sdk/client-s3';
 
-const client = new S3Client({
-  region: 'auto',
-  endpoint: process.env.R2_ENDPOINT!,
-  credentials: {
-    accessKeyId: process.env.R2_ACCESS_KEY_ID!,
-    secretAccessKey: process.env.R2_SECRET_ACCESS_KEY!,
-  },
-});
+let _client: S3Client | null = null;
 
-const BUCKET = process.env.R2_BUCKET!;
+function getClient(): S3Client {
+  if (!_client) {
+    _client = new S3Client({
+      region: 'auto',
+      endpoint: process.env.R2_ENDPOINT,
+      credentials: {
+        accessKeyId: process.env.R2_ACCESS_KEY_ID!,
+        secretAccessKey: process.env.R2_SECRET_ACCESS_KEY!,
+      },
+    });
+  }
+  return _client;
+}
+
+function getBucket(): string {
+  return process.env.R2_BUCKET!;
+}
 
 /** Read a JSON file from R2. Returns null if the key does not exist. */
 export async function r2Get(key: string): Promise<string | null> {
   try {
-    const res = await client.send(new GetObjectCommand({ Bucket: BUCKET, Key: key }));
+    const res = await getClient().send(new GetObjectCommand({ Bucket: getBucket(), Key: key }));
     if (!res.Body) return null;
     // transformToString() is provided by the AWS SDK stream mixin
     return await (res.Body as { transformToString(): Promise<string> }).transformToString();
@@ -32,8 +41,8 @@ export async function r2Get(key: string): Promise<string | null> {
 
 /** Write a JSON string to R2. */
 export async function r2Put(key: string, data: string): Promise<void> {
-  await client.send(new PutObjectCommand({
-    Bucket: BUCKET,
+  await getClient().send(new PutObjectCommand({
+    Bucket: getBucket(),
     Key: key,
     Body: data,
     ContentType: 'application/json',
@@ -43,7 +52,7 @@ export async function r2Put(key: string, data: string): Promise<void> {
 /** Delete a key from R2. Silently ignores missing keys. */
 export async function r2Delete(key: string): Promise<void> {
   try {
-    await client.send(new DeleteObjectCommand({ Bucket: BUCKET, Key: key }));
+    await getClient().send(new DeleteObjectCommand({ Bucket: getBucket(), Key: key }));
   } catch (err: unknown) {
     const code = (err as { Code?: string; name?: string }).Code ?? (err as { name?: string }).name;
     if (code === 'NoSuchKey' || code === 'NotFound') return;
