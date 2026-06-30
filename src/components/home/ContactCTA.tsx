@@ -43,7 +43,7 @@ export default function ContactCTA() {
             Email Us
           </a>
           <a
-            href="https://wa.me/94712043390"
+            href="https://wa.me/94770792622"
             target="_blank"
             rel="noopener noreferrer"
             className="btn-outline-ivory"
