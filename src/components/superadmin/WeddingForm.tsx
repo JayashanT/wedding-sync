@@ -22,6 +22,32 @@ interface WeddingFormProps {
 type Fields = { brideName: string; groomName: string; weddingDate: string; accessCode: string; coupleUsername: string; couplePassword: string };
 const EMPTY: Fields = { brideName: '', groomName: '', weddingDate: '', accessCode: '', coupleUsername: '', couplePassword: '' };
 
+interface FieldProps {
+  label: string;
+  fieldKey: keyof Fields;
+  type?: string;
+  placeholder?: string;
+  value: string;
+  error?: string;
+  onChange: (key: keyof Fields, value: string) => void;
+}
+
+function Field({ label, fieldKey, type = 'text', placeholder, value, error, onChange }: FieldProps) {
+  return (
+    <div>
+      <label className="form-label">{label}</label>
+      <input
+        type={type}
+        value={value}
+        onChange={e => onChange(fieldKey, e.target.value)}
+        placeholder={placeholder}
+        className="form-input"
+      />
+      {error && <p className="mt-1 text-xs text-red-500">{error}</p>}
+    </div>
+  );
+}
+
 export default function WeddingForm({ initialData, onSubmit, onCancel }: WeddingFormProps) {
   const [fields, setFields] = useState<Fields>(initialData ? { ...initialData, couplePassword: '' } : { ...EMPTY });
   const [errors, setErrors] = useState<Partial<Fields>>({});
@@ -66,27 +92,11 @@ export default function WeddingForm({ initialData, onSubmit, onCancel }: Wedding
     setSaving(false);
   }
 
-  function Field({ label, fieldKey, type = 'text', placeholder }: { label: string; fieldKey: keyof Fields; type?: string; placeholder?: string }) {
-    return (
-      <div>
-        <label className="form-label">{label}</label>
-        <input
-          type={type}
-          value={fields[fieldKey]}
-          onChange={e => set(fieldKey, e.target.value)}
-          placeholder={placeholder}
-          className="form-input"
-        />
-        {errors[fieldKey] && <p className="mt-1 text-xs text-red-500">{errors[fieldKey]}</p>}
-      </div>
-    );
-  }
-
   return (
     <form onSubmit={handleSubmit} className="space-y-4">
       <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-        <Field label="Bride's Name" fieldKey="brideName" placeholder="e.g. Ayesha" />
-        <Field label="Groom's Name" fieldKey="groomName" placeholder="e.g. Kasun" />
+        <Field label="Bride's Name" fieldKey="brideName" placeholder="e.g. Ayesha" value={fields.brideName} error={errors.brideName} onChange={set} />
+        <Field label="Groom's Name" fieldKey="groomName" placeholder="e.g. Kasun" value={fields.groomName} error={errors.groomName} onChange={set} />
       </div>
 
       <div>
@@ -107,7 +117,7 @@ export default function WeddingForm({ initialData, onSubmit, onCancel }: Wedding
         <p className="text-xs font-semibold uppercase tracking-wider" style={{ color: 'rgba(27,42,74,0.5)' }}>
           Team Access
         </p>
-        <Field label="Access Code (for team members)" fieldKey="accessCode" placeholder="e.g. AK2026" />
+        <Field label="Access Code (for team members)" fieldKey="accessCode" placeholder="e.g. AK2026" value={fields.accessCode} error={errors.accessCode} onChange={set} />
       </div>
 
       <div
@@ -118,7 +128,7 @@ export default function WeddingForm({ initialData, onSubmit, onCancel }: Wedding
           Couple Admin Credentials
         </p>
         <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-          <Field label="Username" fieldKey="coupleUsername" placeholder="e.g. ayesha.kasun" />
+          <Field label="Username" fieldKey="coupleUsername" placeholder="e.g. ayesha.kasun" value={fields.coupleUsername} error={errors.coupleUsername} onChange={set} />
           <div>
             <label className="form-label">
               Password{isEditing && <span className="ml-1 font-normal opacity-60">(leave blank to keep)</span>}

@@ -4,7 +4,7 @@ import { useState, useEffect } from 'react';
 import Button from '@/components/ui/Button';
 import Input from '@/components/ui/Input';
 import type { ScheduleItem } from '@/types';
-import { offsetDate, getDateLabel, DAYS_RANGE } from '@/lib/schedule';
+import { offsetDate, getDateLabel, DAYS_RANGE, todayString } from '@/lib/schedule';
 
 const MAX_PERSONS = 5;
 
@@ -32,7 +32,7 @@ export default function ScheduleItemForm({
   const [errors, setErrors] = useState<Record<string, string>>({});
   const [saving, setSaving] = useState(false);
 
-  const minDate = offsetDate(weddingDate, -DAYS_RANGE);
+  const minDate = todayString();
   const maxDate = offsetDate(weddingDate, DAYS_RANGE);
   const dateLabel = getDateLabel(date, weddingDate);
 
@@ -107,7 +107,7 @@ export default function ScheduleItemForm({
           </span>
         </div>
         <p className="mt-1 text-xs" style={{ color: 'rgba(27,42,74,0.45)' }}>
-          Date range: {DAYS_RANGE} days before to {DAYS_RANGE} days after the wedding ({weddingDate})
+          Date range: today to {DAYS_RANGE} days after the wedding ({weddingDate})
         </p>
         {errors.date && <p className="mt-1 text-sm text-red-500">{errors.date}</p>}
       </div>
